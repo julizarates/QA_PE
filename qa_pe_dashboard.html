@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QA Tracker — Perú</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#F0EFEb;color:#111;font-family:'Figtree',sans-serif;font-size:16px;line-height:1.4;min-height:100vh}
+
+.hdr{background:#fff;border-bottom:2px solid #E5E4DF;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.logo{font-size:26px;font-weight:900;letter-spacing:-.5px}.logo b{color:#E24B4A}
+.htag{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:#FFF0F0;color:#A32D2D;border:1px solid #F7C1C1;padding:3px 10px;border-radius:8px;margin-left:10px}
+.ctag{font-size:12px;font-weight:700;text-transform:uppercase;background:#FFF8E1;color:#E65100;border:1px solid #FFE082;padding:3px 10px;border-radius:8px;margin-left:7px}
+.hdr-r{display:flex;align-items:center;gap:14px}
+.live{display:flex;align-items:center;gap:6px;font-size:14px;color:#999}
+.dot{width:9px;height:9px;border-radius:50%;background:#ccc}.dot.ok{background:#4CAF50}
+.btn{font-size:14px;font-weight:700;padding:7px 18px;border:1.5px solid #DDD;border-radius:8px;background:#fff;cursor:pointer;font-family:'Figtree',sans-serif}.btn:hover{background:#F5F4F0}
+
+.sel-bar{background:#fff;border-bottom:2px solid #E5E4DF;padding:10px 28px;display:flex;gap:12px;align-items:center;position:sticky;top:62px;z-index:49}
+.fl{font-size:12px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.7px;white-space:nowrap}
+select{font-family:'Figtree',sans-serif;font-size:16px;font-weight:600;background:#F5F4F0;border:1.5px solid #E0DFD9;color:#111;padding:8px 14px;border-radius:8px;cursor:pointer;outline:none;min-width:320px}
+
+.ld{display:flex;align-items:center;justify-content:center;gap:12px;padding:80px;color:#aaa;font-size:18px}
+.sp{width:22px;height:22px;border:3px solid #E0DFD9;border-top-color:#E24B4A;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px;text-align:center;gap:14px}
+.empty-icon{font-size:64px;opacity:.2}
+.empty h2{font-size:22px;font-weight:700;color:#666}
+.empty p{font-size:16px;color:#aaa}
+
+.dash{padding:18px 28px 40px;display:none}
+.dash.on{display:block}
+
+/* STORE NAME */
+.store-name{font-size:38px;font-weight:900;letter-spacing:-.8px;line-height:1;margin-bottom:4px}
+.store-sub{font-size:14px;color:#888;margin-bottom:14px}
+
+/* HERO ROW */
+.hero-row{display:grid;grid-template-columns:auto 1fr 1fr;gap:14px;margin-bottom:14px;align-items:stretch}
+
+/* MEDALLA */
+.medal-card{background:#fff;border:2px solid #E5E4DF;border-radius:14px;padding:18px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:160px}
+.medal-icon{font-size:80px;line-height:1;filter:drop-shadow(0 3px 8px rgba(0,0,0,.15))}
+.medal-name{font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;line-height:1}
+.medal-name.Gold{color:#B8860B}.medal-name.Silver{color:#607D8B}.medal-name.Bronze{color:#8D4E1A}
+.medal-prev{font-size:13px;color:#aaa}
+.medal-move{font-size:13px;font-weight:700;padding:3px 10px;border-radius:6px;margin-top:3px}
+.medal-move.up{background:#E8F5E9;color:#2E7D32}.medal-move.dn{background:#FFF0F0;color:#A32D2D}
+
+/* RANKING */
+.rank-card{background:#fff;border:2px solid #E5E4DF;border-radius:14px;padding:16px 22px;display:flex;align-items:center;gap:16px}
+.rank-big{display:flex;align-items:baseline;gap:6px;flex-shrink:0}
+.rank-num{font-size:68px;font-weight:900;letter-spacing:-3px;line-height:1}
+.rank-of{font-size:18px;color:#aaa;font-weight:600}
+.rdiv{width:2px;height:56px;background:#E5E4DF;flex-shrink:0}
+.rank-info{display:flex;flex-direction:column;gap:8px;flex:1}
+.ri{display:flex;align-items:center;gap:7px;font-size:15px}
+.ri span{color:#888}.ri strong{color:#111;font-weight:700}
+.rchip{font-size:13px;font-weight:700;padding:2px 9px;border-radius:6px}
+.rchip.up{background:#E8F5E9;color:#2E7D32}.rchip.dn{background:#FFF0F0;color:#A32D2D}.rchip.eq{background:#F5F4F0;color:#999}
+
+/* PROGRESS */
+.prog-card{background:#fff;border:2px solid #E5E4DF;border-radius:14px;padding:16px 22px;display:flex;flex-direction:column;justify-content:center;gap:12px}
+.prog-hdr{display:flex;justify-content:space-between;align-items:center}
+.prog-title{font-size:16px;font-weight:700}
+.prog-pts{font-size:18px;font-weight:800}
+.prog-pts.Bronze{color:#8D4E1A}.prog-pts.Silver{color:#607D8B}.prog-pts.Gold{color:#B8860B}
+.pbar{height:16px;background:#F0EFEB;border-radius:8px;overflow:hidden}
+.pfill{height:100%;border-radius:8px;transition:width .6s}
+.pfill.Gold{background:#F5C842}.pfill.Silver{background:#90A4AE}.pfill.Bronze{background:#CD853F}
+.plabels{display:flex;justify-content:space-between;font-size:13px;color:#aaa}
+
+/* KPIs */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}
+.kpi{background:#fff;border:2px solid #E5E4DF;border-radius:12px;padding:16px 18px;border-top:5px solid var(--c,#999)}
+.kpi-icon{font-size:28px;margin-bottom:4px}
+.kpi-l{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#aaa;margin-bottom:2px}
+.kpi-v{font-size:42px;font-weight:900;letter-spacing:-.8px;line-height:1;margin-bottom:8px}
+.cbox{background:#F5F4F0;border-radius:6px;padding:6px 9px;display:flex;flex-direction:column;gap:3px}
+.cmp{display:flex;justify-content:space-between;font-size:13px}
+.cmp-lbl{color:#888}.cmp-val{font-weight:700}
+.up-bad{color:#A32D2D}.dn-good{color:#2E7D32}.eq{color:#aaa}
+
+/* CRITICS */
+.critics-row{border-radius:10px;padding:12px 18px;margin-bottom:12px;border:2px solid;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.critics-row.dirty{background:#FFF8F8;border-color:#F7C1C1}
+.critics-row.clean{background:#F0FFF4;border-color:#C8E6C9}
+.clabel{font-size:15px;font-weight:700;white-space:nowrap}
+.clabel.dirty{color:#A32D2D}.clabel.clean{color:#2E7D32}
+.chip{font-size:14px;font-weight:600;padding:5px 14px;border-radius:8px;background:#fff;border:2px solid #F7C1C1;color:#A32D2D;display:flex;align-items:center;gap:5px}
+
+/* MÉTRICAS */
+.sec-title{font-size:15px;font-weight:700;color:#444;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.mgrid .mc:nth-child(4){grid-column:1/2}.mgrid .mc:nth-child(5){grid-column:2/3}
+.mc{background:#fff;border:2px solid #E5E4DF;border-radius:12px;padding:14px 16px;border-left:6px solid var(--mc)}
+.mc.ok{--mc:#4CAF50}.mc.bad{--mc:#E24B4A}
+.mc-name{font-size:14px;font-weight:700;color:#555;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+.mc-icon{font-size:20px}
+.mc-badge{font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:auto}
+.mc-badge.ok{background:#E8F5E9;color:#2E7D32}.mc-badge.bad{background:#FFF0F0;color:#A32D2D}
+.mc-bar{height:10px;background:#F0EFEB;border-radius:5px;overflow:hidden;margin-bottom:6px}
+.mc-fill{height:100%;border-radius:5px}
+.mc-fill.ok{background:#4CAF50}.mc-fill.bad{background:#E24B4A}
+.mc-foot{display:flex;justify-content:space-between;font-size:15px}
+.mc-score{font-weight:800}.mc-score.ok{color:#2E7D32}.mc-score.bad{color:#A32D2D}
+.mc-max{color:#aaa}
+
+/* BELOW FOLD */
+.fold-sep{border:none;border-top:3px dashed #E5E4DF;margin:16px 0}
+.qstats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.qstat{background:#fff;border:2px solid #E5E4DF;border-radius:12px;padding:14px 18px;text-align:center}
+.qstat-l{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#aaa;margin-bottom:4px}
+.qstat-v{font-size:32px;font-weight:900;color:#2196F3}
+.trend-card{background:#fff;border:2px solid #E5E4DF;border-radius:12px;padding:16px 18px;margin-bottom:14px}
+.tbar{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.tbar-w{font-size:14px;color:#888;min-width:90px}
+.tbar-wrap{flex:1;height:10px;background:#F0EFEB;border-radius:5px;overflow:hidden}
+.tbar-fill{height:100%;border-radius:5px}
+.tbar-val{font-size:14px;font-weight:700;min-width:48px;text-align:right}
+.rtable{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;border:2px solid #E5E4DF}
+.rtable th{background:#F5F4F0;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#888;padding:10px 14px;text-align:left;border-bottom:2px solid #E5E4DF}
+.rtable td{padding:10px 14px;font-size:15px;border-bottom:1px solid #F0EFEB}
+.rtable tr:last-child td{border-bottom:none}
+.rtable tr.me td{background:#FFFDE7;font-weight:700}
+.rbadge{font-size:12px;font-weight:700;padding:3px 10px;border-radius:6px}
+.rbadge.Gold{background:#FFF8E1;color:#B8860B}.rbadge.Silver{background:#F5F5F5;color:#607D8B}.rbadge.Bronze{background:#FBE9E7;color:#8D4E1A}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div style="display:flex;align-items:center">
+    <span class="logo">Turbo<b>Ops</b></span>
+    <span class="htag">QA Tracker</span>
+    <span class="ctag">🇵🇪 PE</span>
+  </div>
+  <div class="hdr-r">
+    <span class="live"><span class="dot" id="dot"></span><span id="upd">Cargando...</span></span>
+    <button class="btn" onclick="loadAll()">↺ Refrescar</button>
+  </div>
+</div>
+
+<div class="sel-bar">
+  <span class="fl">Tienda</span>
+  <select id="store-sel" onchange="onStore()"><option value="">— Selecciona tu tienda —</option></select>
+</div>
+
+<div class="ld" id="gld"><div class="sp"></div>Cargando datos...</div>
+<div class="empty" id="empty-msg" style="display:none">
+  <div class="empty-icon">🏪</div>
+  <h2>Selecciona tu tienda</h2>
+  <p>Elige una tienda para ver su estado de calidad</p>
+</div>
+
+<div class="dash" id="dash">
+  <div class="store-name" id="st-name">—</div>
+  <div class="store-sub" id="st-sub">—</div>
+
+  <div class="hero-row">
+    <div class="medal-card">
+      <div class="medal-icon" id="medal-icon">—</div>
+      <div class="medal-name" id="medal-name">—</div>
+      <div class="medal-prev" id="medal-prev"></div>
+      <span class="medal-move up" id="medal-move" style="display:none"></span>
+    </div>
+    <div class="rank-card">
+      <div class="rank-big">
+        <span class="rank-num" id="r-num">—</span>
+        <span class="rank-of" id="r-of">—</span>
+      </div>
+      <div class="rdiv"></div>
+      <div class="rank-info">
+        <div class="ri"><span>Sem. ant.:</span><strong id="r-prev">—</strong><span class="rchip eq" id="r-move">—</span></div>
+        <div class="ri"><span>Ciudad:</span><strong id="r-city">—</strong></div>
+        <div class="ri"><span>Semana:</span><strong id="r-week">—</strong></div>
+      </div>
+    </div>
+    <div class="prog-card">
+      <div class="prog-hdr">
+        <span class="prog-title" id="next-title">—</span>
+        <span class="prog-pts" id="next-pts">—</span>
+      </div>
+      <div class="pbar"><div class="pfill Gold" id="pfill" style="width:0%"></div></div>
+      <div class="plabels"><span id="p-from">—</span><span id="p-to">—</span></div>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi" style="--c:#E24B4A">
+      <div class="kpi-icon">📊</div><div class="kpi-l">Semana en curso</div>
+      <div class="kpi-v" id="kv-qa">—</div>
+      <div class="cbox"><div class="cmp"><span class="cmp-lbl">vs sem. ant.</span><span class="cmp-val" id="kd-qa1">—</span></div></div>
+    </div>
+    <div class="kpi" style="--c:#4CAF50">
+      <div class="kpi-icon">✅</div><div class="kpi-l">Métricas OK</div>
+      <div class="kpi-v" id="kv-ok">—</div>
+      <div class="cbox"><div class="cmp"><span class="cmp-lbl">de 5 en target</span></div></div>
+    </div>
+    <div class="kpi" style="--c:#2196F3">
+      <div class="kpi-icon">🏆</div><div class="kpi-l">Ranking Q2</div>
+      <div class="kpi-v" id="kv-rank">—</div>
+      <div class="cbox">
+        <div class="cmp"><span class="cmp-lbl">vs sem. ant.</span><span class="cmp-val" id="kd-rank">—</span></div>
+        <div class="cmp"><span class="cmp-lbl">QA prom. Q2</span><span class="cmp-val" id="kd-rankQ2">—</span></div>
+      </div>
+    </div>
+    <div class="kpi" style="--c:#FF9800">
+      <div class="kpi-icon">📅</div><div class="kpi-l">Acumulado Q2</div>
+      <div class="kpi-v" id="kd-qaQ2">—</div>
+      <div class="cbox">
+        <div class="cmp"><span class="cmp-lbl">QA promedio Q2</span></div>
+        <div class="cmp"><span class="cmp-lbl">Total Grade</span><span class="cmp-val" id="kv-grade">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="critics-row dirty" id="critics-row">
+    <span class="clabel dirty" id="critics-icon">⚠️</span>
+    <span class="clabel dirty" id="critics-title">—</span>
+    <div style="display:flex;flex-wrap:wrap;gap:6px" id="chips"></div>
+  </div>
+
+  <div class="sec-title">📋 Métricas</div>
+  <div class="mgrid" id="mgrid"></div>
+
+  <hr class="fold-sep">
+
+  <div class="qstats-row">
+    <div class="qstat"><div class="qstat-l">QA prom. Q2</div><div class="qstat-v" id="q1-qa">—</div></div>
+    <div class="qstat"><div class="qstat-l">Mejor sem.</div><div class="qstat-v" id="q1-best">—</div></div>
+    <div class="qstat"><div class="qstat-l">Peor sem.</div><div class="qstat-v" id="q1-worst">—</div></div>
+    <div class="qstat"><div class="qstat-l">Rank prom.</div><div class="qstat-v" id="q1-rank">—</div></div>
+  </div>
+  <div class="sec-title">📈 Evolución Q2</div>
+  <div class="trend-card" id="trend-bars"></div>
+  <div class="sec-title" style="margin-top:16px">🏅 Ranking Q2 — Perú</div>
+  <table class="rtable">
+    <thead><tr><th>#</th><th>Tienda</th><th>Ciudad</th><th>QA Score</th><th>Cluster</th></tr></thead>
+    <tbody id="ranking-body"></tbody>
+  </table>
+</div>
+
+<script>
+const SID='1V2gV4YgV4FRwIAsNf6p-kv3Uy2wx5H7O3rInwZPTFsE';
+const AKEY='AIzaSyAttY6mdOrj4ic3vYCyuFpAkiYx9HFrasg';
+const SHEET='Wh Data';
+const METRICS=[
+  {col:'SCORE_PICKING_TIME',crit:'CRITIC_PICKING_TIME',label:'Picking Time',icon:'⏱️',max:30},
+  {col:'SCORE_HANDOFF_POST',crit:'CRITIC_HANDOFF_POST',label:'Handoff Post',icon:'🤝',max:10},
+  {col:'SCORE_CR_PARTNER',  crit:'CRITIC_CR_PARTNER',  label:'Cancel Rate', icon:'❌',max:10},
+  {col:'SCORE_SO_OPS',      crit:'CRITIC_SO_OPS',      label:'Stockout Ops',icon:'📦',max:15},
+  {col:'SCORE_DEFECT_RATE', crit:'CRITIC_DEFECT_RATE', label:'Defect Rate', icon:'🔍',max:17},
+];
+const MAX_SCORE=82;
+const Q1_START='2026-01-01';
+const Q1_END  ='2026-03-31';
+const Q2_START='2026-04-01';
+
+// Normalize date string to YYYY-MM-DD
+function normDate(s){
+  if(!s)return'';
+  const d=s.toString().split(' ')[0].split('T')[0];
+  if(d.includes('/')){const p=d.split('/');if(p.length===3){const y=p[2].length===4?p[2]:'20'+p[2];return`${y}-${p[0].padStart(2,'0')}-${p[1].padStart(2,'0')}`;}}
+  return d;
+}
+
+// Current week Monday (closed = strictly before this)
+function currentWeekMonday(){
+  const d=new Date();
+  const day=d.getDay();
+  const diff=d.getDate()-day+(day===0?-6:1);
+  const mon=new Date(d.setDate(diff));
+  return mon.toISOString().split('T')[0];
+}
+
+function isQ2Closed(semana){
+  const s=normDate(semana);
+  return s>=Q2_START && s<currentWeekMonday();
+}
+function isQ1(semana){
+  const s=normDate(semana);
+  return s>=Q1_START && s<=Q1_END;
+}
+const CL_ICON={Gold:'🥇',Silver:'🥈',Bronze:'🥉'};
+const CL_ES={Gold:'Oro',Silver:'Plata',Bronze:'Bronce'};
+const NEXT_T={Bronze:85,Silver:93,Gold:100};
+const NEXT_F={Bronze:0,Silver:85,Gold:93};
+const ICON_MAP={'Picking Time':'⏱️','Handoff Post':'🤝','Cancel Rate':'❌','Stockout Ops':'📦','Defect Rate':'🔍'};
+let allRows=[],stores=[];
+
+function pf(v){if(v===null||v===undefined||v==='')return 0;const n=parseFloat(v.toString().replace(/,(?=\d)/g,''));return isNaN(n)?0:n;}
+
+function calcStore(r){
+  const hC=parseFloat(r.CRITIC_HANDOFF_POST)===1,hR=pf(r.SCORE_HANDOFF_POST),hF=(!hC&&hR===0)?10:hR,wF=hF!==hR;
+  const scores={};METRICS.forEach(m=>{scores[m.label]=m.label==='Handoff Post'?hF:pf(r[m.col]);});
+  const qa=Object.values(scores).reduce((a,b)=>a+b,0)/MAX_SCORE*100;
+  const cl=qa>=93?'Gold':qa>=85?'Silver':'Bronze',cp=r.CLUSTER_PREV||null;
+  let mv=null;
+  if(cp){if(cl===cp)mv='Igual';else if(cl==='Gold'&&cp!=='Gold')mv='Subió a Gold ⬆';else if(cl==='Silver'&&cp==='Bronze')mv='Subió a Silver ⬆';else if(cl==='Bronze'&&cp==='Silver')mv='Bajó a Bronze ⬇';else if(cl==='Bronze'&&cp==='Gold')mv='Bajó a Bronze ⬇';else if(cl==='Silver'&&cp==='Gold')mv='Bajó a Silver ⬇';else mv='Igual';}
+  const critics=METRICS.filter(m=>{if(m.label==='Handoff Post'&&wF)return false;return parseFloat(r[m.crit])===1;}).map(m=>m.label);
+  return{key:r.KEYWH,name:r.WH_NAME,city:(r.CITY_NAME||'').trim(),semana:r.SEMANA,qa,wasFixed:wF,cluster:cl,cluster_prev:cp,movement:mv,qa_delta:r.QA_SCORE_DELTA!==''?pf(r.QA_SCORE_DELTA):null,rank:parseInt(r.RANK_IN_COUNTRY)||0,rank_prev:r.RANK_PREV!==''?parseInt(r.RANK_PREV):null,rank_delta:r.RANK_DELTA!==''?parseInt(r.RANK_DELTA):null,total_wh:parseInt(r.TOTAL_WH_IN_COUNTRY)||0,pts_next:Math.max(0,qa>=93?0:qa>=85?93-qa:85-qa),total_grade:(METRICS.length-critics.length)/METRICS.length,critics,scores};
+}
+
+async function fetchSheet(name){
+  const r=await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SID}/values/${encodeURIComponent(name)}?key=${AKEY}`);
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  const json=await r.json();const rows=json.values||[];
+  let hi=rows.findIndex(row=>row.some(c=>['SEMANA','COUNTRY','KEYWH','WH_NAME'].includes((c||'').toString().trim().toUpperCase())));
+  if(hi===-1)hi=0;const hdrs=rows[hi];
+  return rows.slice(hi+1).filter(row=>row.some(c=>c&&c.toString().trim())).map(row=>{
+    const o={};hdrs.forEach((h,i)=>{o[h.trim()]=(row[i]||'').toString().trim();});
+    if(o.SEMANA)o.SEMANA=o.SEMANA.split(' ')[0].split('T')[0];return o;
+  });
+}
+
+function buildData(rows){
+  const co=rows.filter(r=>r.COUNTRY==='PE'&&r.WH_NAME&&r.WH_NAME.trim()!==''&&r.QA_SCORE&&r.QA_SCORE.toString().trim()!=='');
+  allRows=co;
+
+  // Only real closed weeks (>=5 stores, before current week)
+  const curMon=currentWeekMonday();
+  const weekCounts={};
+  co.forEach(r=>{if(r.SEMANA&&normDate(r.SEMANA)<curMon)weekCounts[r.SEMANA]=(weekCounts[r.SEMANA]||0)+1;});
+  const closedWeeks=Object.keys(weekCounts).filter(w=>weekCounts[w]>=5).sort();
+
+  // Last closed week = most recent display week
+  const lastW=closedWeeks[closedWeeks.length-1];
+  // Last Q1 closed week = cierre del Q1
+  const q1Weeks=closedWeeks.filter(w=>isQ1(w));
+  const lastQ1W=q1Weeks[q1Weeks.length-1]||null;
+
+  // Build Q1 close clusters per store (for "Antes: X")
+  const q1CloseC={};
+  if(lastQ1W)co.filter(r=>r.SEMANA===lastQ1W).forEach(r=>{const s=calcStore(r);q1CloseC[s.key]=s.cluster;});
+
+  stores=co.filter(r=>r.SEMANA===lastW).map(r=>{
+    const s=calcStore(r);
+    // cluster_prev = cluster at Q1 close
+    const cp=q1CloseC[s.key]||null;
+    s.cluster_prev=cp;
+    s.cluster_prev_label=cp?`Cierre Q1: ${CL_ES[cp]||cp}`:'';
+    // movement = Q2 current vs Q1 close
+    if(!cp)s.movement=null;
+    else if(s.cluster===cp)s.movement='Igual que Q1';
+    else if(s.cluster==='Gold'&&cp!=='Gold')s.movement='Subió a Gold vs Q1 ⬆';
+    else if(s.cluster==='Silver'&&cp==='Bronze')s.movement='Subió a Silver vs Q1 ⬆';
+    else if(s.cluster==='Bronze'&&cp==='Silver')s.movement='Bajó a Bronze vs Q1 ⬇';
+    else if(s.cluster==='Bronze'&&cp==='Gold')s.movement='Bajó a Bronze vs Q1 ⬇';
+    else if(s.cluster==='Silver'&&cp==='Gold')s.movement='Bajó a Silver vs Q1 ⬇';
+    else s.movement='Igual que Q1';
+    return s;
+  });
+}
+
+function fmtW(w){if(!w)return'—';const d=new Date(w);return isNaN(d)?w:d.toLocaleDateString('es',{day:'numeric',month:'short'});}
+function dH(v,inv=false){if(v===null||v===undefined)return'<span class="eq">—</span>';const g=inv?v<0:v>0,c=v===0?'eq':g?'dn-good':'up-bad',a=v===0?'→':v>0?'▲':'▼';return`<span class="${c}">${a} ${v>0?'+':''}${v.toFixed(2)}</span>`;}
+
+function onStore(){
+  const key=document.getElementById('store-sel').value;
+  document.getElementById('empty-msg').style.display='none';
+  document.getElementById('dash').classList.remove('on');
+  if(!key){document.getElementById('empty-msg').style.display='flex';return;}
+  const s=stores.find(x=>x.key===key);if(s)renderDash(s);
+}
+
+function renderDash(s){
+  document.getElementById('dash').classList.add('on');
+  // Q2 calcs first
+  let hist=allRows.filter(r=>r.KEYWH===s.key).map(r=>calcStore(r)).filter(h=>h.qa>0&&isQ2Closed(h.semana)).sort((a,b)=>a.semana.localeCompare(b.semana));
+  if(!hist.length)hist=allRows.filter(r=>r.KEYWH===s.key).map(r=>calcStore(r)).filter(h=>h.qa>0).sort((a,b)=>a.semana.localeCompare(b.semana));
+  const qaVals=hist.map(h=>h.qa);
+  const avgQ1=qaVals.length?qaVals.reduce((a,b)=>a+b,0)/qaVals.length:s.qa;
+  const bestQ1=qaVals.length?Math.max(...qaVals):s.qa,worstQ1=qaVals.length?Math.min(...qaVals):s.qa;
+  const avgRank=hist.length?Math.round(hist.reduce((a,h)=>a+h.rank,0)/hist.length):s.rank;
+  const allK=[...new Set(allRows.map(r=>r.KEYWH))];
+  const q2All=allK.map(key=>{
+    let c=allRows.filter(r=>r.KEYWH===key).map(r=>calcStore(r)).filter(h=>h.qa>0&&isQ2Closed(h.semana));
+    if(!c.length)c=allRows.filter(r=>r.KEYWH===key).map(r=>calcStore(r)).filter(h=>h.qa>0);
+    if(!c.length)return null;
+    const avg=c.reduce((a,h)=>a+h.qa,0)/c.length,last=c[c.length-1];
+    return{key,name:last.name,city:last.city,avgQa:avg,cluster:avg>=93?'Gold':avg>=85?'Silver':'Bronze'};
+  }).filter(Boolean).sort((a,b)=>b.avgQa-a.avgQa);
+  const q2Pos=q2All.findIndex(r=>r.key===s.key)+1||1,q2Total=q2All.length||s.total_wh;
+  const q2AvgQa=(q2All.find(r=>r.key===s.key)||{avgQa:s.qa}).avgQa;
+  const q2Cl=q2AvgQa>=93?'Gold':q2AvgQa>=85?'Silver':'Bronze';
+
+  document.getElementById('st-name').textContent=s.name;
+  document.getElementById('st-sub').textContent=`${s.city} · ${s.key} · Semana del ${fmtW(s.semana)}`;
+  document.getElementById('medal-icon').textContent=CL_ICON[q2Cl]||'—';
+  const mn=document.getElementById('medal-name');mn.textContent=CL_ES[q2Cl]||q2Cl;mn.className='medal-name '+q2Cl;
+  document.getElementById('medal-prev').textContent=s.cluster_prev_label||'';
+  // Recalculate movement using q2Cl (what medal shows) vs Q1 close cluster
+  const cp2=s.cluster_prev;
+  let q2Mov=null;
+  if(cp2){
+    if(q2Cl===cp2)q2Mov='Igual que Q1';
+    else if(q2Cl==='Gold'&&cp2!=='Gold')q2Mov='Subió a Gold vs Q1 ⬆';
+    else if(q2Cl==='Silver'&&cp2==='Bronze')q2Mov='Subió a Silver vs Q1 ⬆';
+    else if(q2Cl==='Bronze'&&cp2==='Silver')q2Mov='Bajó a Bronze vs Q1 ⬇';
+    else if(q2Cl==='Bronze'&&cp2==='Gold')q2Mov='Bajó a Bronze vs Q1 ⬇';
+    else if(q2Cl==='Silver'&&cp2==='Gold')q2Mov='Bajó a Silver vs Q1 ⬇';
+    else q2Mov='Igual que Q1';
+  }
+  const mm=document.getElementById('medal-move');
+  if(q2Mov&&q2Mov!=='Igual que Q1'){mm.className='medal-move '+(q2Mov.includes('Subió')?'up':'dn');mm.textContent=q2Mov;mm.style.display='inline-block';}else mm.style.display='none';
+
+  document.getElementById('r-num').textContent=`#${q2Pos}`;
+  document.getElementById('r-of').textContent=`de ${q2Total}`;
+  document.getElementById('r-prev').textContent=s.rank_prev!==null?`#${s.rank_prev}`:'—';
+  document.getElementById('r-city').textContent=s.city;
+  document.getElementById('r-week').textContent=fmtW(s.semana);
+  const rm=document.getElementById('r-move');
+  if(s.rank_delta!==null&&s.rank_delta!==0){rm.className='rchip '+(s.rank_delta<0?'up':'dn');rm.textContent=s.rank_delta<0?`▲${Math.abs(s.rank_delta)}`:`▼${s.rank_delta}`;}else{rm.className='rchip eq';rm.textContent='=';}
+
+  const nT=NEXT_T[q2Cl]||100,fT=NEXT_F[q2Cl]||0;
+  const pct=Math.min(100,Math.max(0,((q2AvgQa-fT)/(nT-fT))*100));
+  const pf2=document.getElementById('pfill');pf2.style.width=pct.toFixed(1)+'%';pf2.className='pfill '+q2Cl;
+  const ptsN=Math.max(0,q2AvgQa>=93?0:q2AvgQa>=85?93-q2AvgQa:85-q2AvgQa);
+  if(q2Cl==='Gold'){document.getElementById('next-title').textContent='🏆 Nivel máximo Q2';document.getElementById('next-pts').textContent='100/100';document.getElementById('next-pts').className='prog-pts Gold';}
+  else{document.getElementById('next-title').textContent=`Hacia ${q2Cl==='Bronze'?'Plata':'Oro'} ${q2Cl==='Bronze'?'🥈':'🥇'}`;document.getElementById('next-pts').textContent=`Faltan ${ptsN.toFixed(2)} pts`;document.getElementById('next-pts').className='prog-pts '+q2Cl;}
+  document.getElementById('p-from').textContent=`${q2AvgQa.toFixed(1)} pts Q2`;
+  document.getElementById('p-to').textContent=`Meta: ${nT}`;
+
+  document.getElementById('kv-qa').textContent=s.qa.toFixed(2);
+  document.getElementById('kd-qa1').innerHTML=dH(s.qa_delta,false);
+  document.getElementById('kd-qaQ2').textContent=avgQ1.toFixed(1);
+  document.getElementById('kv-ok').textContent=METRICS.length-s.critics.length;
+  document.getElementById('kv-rank').textContent=`#${q2Pos}`;
+  if(s.rank_delta!==null){const c=s.rank_delta<0?'dn-good':s.rank_delta>0?'up-bad':'eq';document.getElementById('kd-rank').innerHTML=`<span class="${c}">${s.rank_delta<0?'▲':'▼'} ${Math.abs(s.rank_delta)} pos</span>`;}
+  document.getElementById('kd-rankQ2').innerHTML=`<span class="eq">${q2AvgQa.toFixed(1)} prom.</span>`;
+  document.getElementById('kv-grade').textContent=Math.round(s.total_grade*100)+'%';
+
+  const cr=document.getElementById('critics-row'),ct=document.getElementById('critics-title'),ci=document.getElementById('critics-icon');
+  const msgs={Gold:{clean:{icon:'🏆',msg:'Nivel máximo — ¡Todas las métricas perfectas!',cls:'clean'},dirty:{icon:'⚠️',msg:`${s.critics.length} métrica${s.critics.length>1?'s':''} crítica${s.critics.length>1?'s':''} — en riesgo de perder Oro:`,cls:'dirty'}},Silver:{clean:{icon:'🎯',msg:`Todo en target — faltan ${s.pts_next.toFixed(1)} pts para Oro. ¡Empuja!`,cls:'clean'},dirty:{icon:'⚠️',msg:`${s.critics.length} métrica${s.critics.length>1?'s':''} crítica${s.critics.length>1?'s':''} — mejóralas para Oro:`,cls:'dirty'}},Bronze:{clean:{icon:'📈',msg:`En target pero QA ${s.qa.toFixed(1)} en Bronce — faltan ${s.pts_next.toFixed(1)} pts para Plata.`,cls:'warn'},dirty:{icon:'🚨',msg:`${s.critics.length} métrica${s.critics.length>1?'s':''} crítica${s.critics.length>1?'s':''}. Prioriza para salir de Bronce:`,cls:'dirty'}}};
+  const m=msgs[s.cluster][s.critics.length===0?'clean':'dirty'];
+  if(m.cls==='warn'){cr.className='critics-row';cr.style.background='#FFFDE7';cr.style.border='2px solid #FFE082';ct.className='clabel';ct.style.color='#856404';ci.className='clabel';ci.style.color='#856404';}
+  else if(m.cls==='clean'){cr.className='critics-row clean';cr.style.background='';cr.style.border='';ct.className='clabel clean';ct.style.color='';ci.className='clabel clean';ci.style.color='';}
+  else{cr.className='critics-row dirty';cr.style.background='';cr.style.border='';ct.className='clabel dirty';ct.style.color='';ci.className='clabel dirty';ci.style.color='';}
+  ci.textContent=m.icon;ct.textContent=m.msg;
+  document.getElementById('chips').innerHTML=s.critics.map(c=>`<div class="chip">${ICON_MAP[c]||'⚠️'} ${c}</div>`).join('');
+
+  document.getElementById('mgrid').innerHTML=METRICS.map(m=>{
+    const sc=s.scores[m.label]||0,bad=s.critics.includes(m.label),p=Math.min(100,(sc/m.max)*100),cls=bad?'bad':'ok';
+    const note=(m.label==='Handoff Post'&&s.wasFixed)?'<span style="font-size:11px;color:#aaa"> (s/d)</span>':'';
+    return`<div class="mc ${cls}"><div class="mc-name"><span class="mc-icon">${m.icon}</span>${m.label}${note}<span class="mc-badge ${cls}">${bad?'Critic':'OK'}</span></div><div class="mc-bar"><div class="mc-fill ${cls}" style="width:${p.toFixed(1)}%"></div></div><div class="mc-foot"><span class="mc-score ${cls}">${sc.toFixed(1)}</span><span class="mc-max">/ ${m.max}</span></div></div>`;
+  }).join('');
+
+  document.getElementById('q1-qa').textContent=avgQ1.toFixed(1);
+  document.getElementById('q1-best').textContent=bestQ1.toFixed(1);
+  document.getElementById('q1-worst').textContent=worstQ1.toFixed(1);
+  document.getElementById('q1-rank').textContent=`#${avgRank}`;
+  const maxQA=Math.max(...qaVals,1);
+  document.getElementById('trend-bars').innerHTML=hist.map(h=>{
+    const iC=h.semana===s.semana,col=h.qa>=93?'#F5C842':h.qa>=85?'#90A4AE':'#CD853F';
+    return`<div class="tbar"><span class="tbar-w" style="${iC?'font-weight:800;color:#111':''}">${fmtW(h.semana)}${iC?' ◀':''}</span><div class="tbar-wrap"><div class="tbar-fill" style="width:${(h.qa/maxQA*100).toFixed(1)}%;background:${iC?'#111':col}"></div></div><span class="tbar-val" style="color:${iC?'#111':'#888'}">${h.qa.toFixed(1)}</span></div>`;
+  }).join('');
+
+  document.getElementById('ranking-body').innerHTML=q2All.map((r,i)=>{
+    const pos=i+1,isMe=r.key===s.key,medal=pos<=3?['🥇','🥈','🥉'][pos-1]:pos;
+    return`<tr class="${isMe?'me':''}"><td style="font-weight:800;font-size:${pos<=3?'18px':'15px'}">${medal}</td><td>${r.name}${isMe?` <span style="font-size:11px;background:#FFF9C4;padding:1px 6px;border-radius:4px;color:#856404">tú</span>`:''}</td><td style="color:#888">${r.city}</td><td style="font-weight:700">${r.avgQa.toFixed(2)}</td><td><span class="rbadge ${r.cluster}">${CL_ES[r.cluster]}</span></td></tr>`;
+  }).join('');
+}
+
+async function loadAll(){
+  document.getElementById('dot').className='dot';
+  document.getElementById('upd').textContent='Cargando...';
+  document.getElementById('gld').style.display='flex';
+  document.getElementById('empty-msg').style.display='none';
+  document.getElementById('dash').classList.remove('on');
+  try{
+    const rows=await fetchSheet(SHEET);
+    buildData(rows);
+    const prev=document.getElementById('store-sel').value;
+    const sel=document.getElementById('store-sel');
+    sel.innerHTML='<option value="">— Selecciona tu tienda —</option>';
+    [...stores].sort((a,b)=>a.name.localeCompare(b.name,'es')).forEach(s=>{
+      const o=document.createElement('option');o.value=s.key;o.textContent=`${s.name} (${s.city})`;
+      if(s.key===prev)o.selected=true;sel.appendChild(o);
+    });
+    document.getElementById('gld').style.display='none';
+    document.getElementById('dot').className='dot ok';
+    document.getElementById('upd').textContent='Actualizado '+new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
+    if(prev&&stores.find(s=>s.key===prev))onStore();
+    else document.getElementById('empty-msg').style.display='flex';
+  }catch(e){
+    document.getElementById('gld').innerHTML=`<span style="color:#E24B4A;padding:20px;display:block">Error: ${e.message}</span>`;
+  }
+}
+loadAll();
+</script>
+</body>
+</html>
